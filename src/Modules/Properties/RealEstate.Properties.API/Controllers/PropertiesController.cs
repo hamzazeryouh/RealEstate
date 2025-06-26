@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RealEstate.Properties.Domain.Entities;
@@ -27,7 +26,7 @@ public class PropertiesController : ControllerBase
             // Return sample data for now
             var sampleProperties = new[]
             {
-                new 
+                new
                 {
                     Id = Guid.NewGuid(),
                     Title = "Beautiful Downtown Apartment",
@@ -39,7 +38,7 @@ public class PropertiesController : ControllerBase
                     Bathrooms = 2,
                     Area = 1200m
                 },
-                new 
+                new
                 {
                     Id = Guid.NewGuid(),
                     Title = "Luxury Villa with Pool",
@@ -52,7 +51,7 @@ public class PropertiesController : ControllerBase
                     Area = 3500m
                 }
             };
-            
+
             await Task.Delay(1); // Simulate async operation
             return Ok(sampleProperties);
         }
@@ -72,7 +71,7 @@ public class PropertiesController : ControllerBase
         try
         {
             // Return sample data for now
-            var sampleProperty = new 
+            var sampleProperty = new
             {
                 Id = id,
                 Title = "Sample Property",
@@ -83,7 +82,7 @@ public class PropertiesController : ControllerBase
                 Bedrooms = 3,
                 Bathrooms = 2,
                 Area = 2000m,
-                Address = new 
+                Address = new
                 {
                     Street = "123 Main St",
                     City = "Sample City",
@@ -111,7 +110,7 @@ public class PropertiesController : ControllerBase
     {
         try
         {
-            var newProperty = new 
+            var newProperty = new
             {
                 Id = Guid.NewGuid(),
                 Title = request.Title,
@@ -140,4 +139,4 @@ public class CreatePropertyRequest
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public string Type { get; set; } = string.Empty;
-} 
+}

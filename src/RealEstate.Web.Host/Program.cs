@@ -14,13 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "RealEstate API", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "RealEstate API",
         Version = "v1",
         Description = "Multi-tenant Real Estate Management System"
     });
-    
+
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -82,16 +82,17 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 
 // Add MediatR
-builder.Services.AddMediatR(cfg => {
+builder.Services.AddMediatR(cfg =>
+{
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
 
 // Add Database Context with connection string fallback
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                           ?? "Server=(localdb)\\mssqllocaldb;Database=RealEstateDB;Trusted_Connection=true;MultipleActiveResultSets=true;";
-    
+
     options.UseSqlServer(connectionString);
 });
 
@@ -192,4 +193,4 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         // Entity configurations will be added here
     }
-} 
+}

@@ -1,0 +1,59 @@
+<Project>
+  
+  <!-- Completely disable Razor compilation and related targets for non-web projects -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'">
+    <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
+    <GenerateRazorAssemblyInfo>false</GenerateRazorAssemblyInfo>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultWebContentItems>false</EnableDefaultWebContentItems>
+    <AddRazorSupportForMvc>false</AddRazorSupportForMvc>
+    <RazorLangVersion>0</RazorLangVersion>
+  </PropertyGroup>
+
+  <!-- Suppress all Razor-related MSBuild warnings -->
+  <PropertyGroup>
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB4011;MSB3026;MSB4036;NETSDK1137</MSBuildWarningsAsMessages>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);MSB4011;MSB3026;MSB4036;NETSDK1137</WarningsNotAsErrors>
+  </PropertyGroup>
+
+  <!-- Empty/No-op Razor targets for non-web projects -->
+  <Target Name="RazorGenerateComponentDesignTime" 
+          Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'" 
+          DependsOnTargets="" 
+          Inputs="" 
+          Outputs="" />
+          
+  <Target Name="RazorGenerate" 
+          Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'" 
+          DependsOnTargets="" 
+          Inputs="" 
+          Outputs="" />
+          
+  <Target Name="_RazorGenerateDesignTime" 
+          Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'" 
+          DependsOnTargets="" 
+          Inputs="" 
+          Outputs="" />
+          
+  <Target Name="RazorCoreGenerate" 
+          Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'" 
+          DependsOnTargets="" 
+          Inputs="" 
+          Outputs="" />
+
+  <Target Name="_RazorResolveAssemblyReferences" 
+          Condition="'$(MSBuildProjectName)' != 'RealEstate.Web.Host'" 
+          DependsOnTargets="" 
+          Inputs="" 
+          Outputs="" />
+
+  <!-- Suppress target not found warnings -->
+  <Target Name="SuppressRazorWarnings" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <PropertyGroup>
+      <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB4011;MSB3026;MSB4036</MSBuildWarningsAsMessages>
+    </PropertyGroup>
+  </Target>
+
+</Project> 

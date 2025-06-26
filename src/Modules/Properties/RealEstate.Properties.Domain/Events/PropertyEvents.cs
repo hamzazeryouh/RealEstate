@@ -19,7 +19,7 @@ public abstract class PropertyDomainEvent : IDomainEvent
 
 public class PropertyPublishedEvent : PropertyDomainEvent
 {
-    public PropertyPublishedEvent(Guid propertyId, string tenantId) 
+    public PropertyPublishedEvent(Guid propertyId, string tenantId)
         : base(propertyId, tenantId)
     {
     }
@@ -29,7 +29,7 @@ public class PropertyPublishedEvent : PropertyDomainEvent
 
 public class PropertyUnpublishedEvent : PropertyDomainEvent
 {
-    public PropertyUnpublishedEvent(Guid propertyId, string tenantId) 
+    public PropertyUnpublishedEvent(Guid propertyId, string tenantId)
         : base(propertyId, tenantId)
     {
     }
@@ -39,7 +39,7 @@ public class PropertyUnpublishedEvent : PropertyDomainEvent
 
 public class PropertyViewedEvent : PropertyDomainEvent
 {
-    public PropertyViewedEvent(Guid propertyId, string tenantId, int totalViews) 
+    public PropertyViewedEvent(Guid propertyId, string tenantId, int totalViews)
         : base(propertyId, tenantId)
     {
         TotalViews = totalViews;
@@ -51,7 +51,7 @@ public class PropertyViewedEvent : PropertyDomainEvent
 
 public class PropertyInquiryReceivedEvent : PropertyDomainEvent
 {
-    public PropertyInquiryReceivedEvent(Guid propertyId, string tenantId, int totalInquiries) 
+    public PropertyInquiryReceivedEvent(Guid propertyId, string tenantId, int totalInquiries)
         : base(propertyId, tenantId)
     {
         TotalInquiries = totalInquiries;
@@ -63,7 +63,7 @@ public class PropertyInquiryReceivedEvent : PropertyDomainEvent
 
 public class PropertyCreatedEvent : PropertyDomainEvent
 {
-    public PropertyCreatedEvent(Guid propertyId, string tenantId, string title, PropertyType type) 
+    public PropertyCreatedEvent(Guid propertyId, string tenantId, string title, PropertyType type)
         : base(propertyId, tenantId)
     {
         Title = title;
@@ -77,7 +77,7 @@ public class PropertyCreatedEvent : PropertyDomainEvent
 
 public class PropertyUpdatedEvent : PropertyDomainEvent
 {
-    public PropertyUpdatedEvent(Guid propertyId, string tenantId, Dictionary<string, object> changes) 
+    public PropertyUpdatedEvent(Guid propertyId, string tenantId, Dictionary<string, object> changes)
         : base(propertyId, tenantId)
     {
         Changes = changes;
@@ -89,10 +89,10 @@ public class PropertyUpdatedEvent : PropertyDomainEvent
 
 public class PropertyDeletedEvent : PropertyDomainEvent
 {
-    public PropertyDeletedEvent(Guid propertyId, string tenantId) 
+    public PropertyDeletedEvent(Guid propertyId, string tenantId)
         : base(propertyId, tenantId)
     {
     }
 
     public override string EventType => "PropertyDeleted";
-} 
+}

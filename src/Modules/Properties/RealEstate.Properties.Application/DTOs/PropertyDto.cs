@@ -135,4 +135,4 @@ public class PropertySearchRequest
     public int PageSize { get; set; } = 20;
     public string? SortBy { get; set; }
     public bool SortDescending { get; set; } = false;
-} 
+}

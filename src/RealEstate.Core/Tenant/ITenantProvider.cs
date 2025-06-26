@@ -30,4 +30,4 @@ public interface ITenantRepository
     Task<TenantInfo> CreateAsync(TenantInfo tenant);
     Task UpdateAsync(TenantInfo tenant);
     Task DeleteAsync(string tenantId);
-} 
+}

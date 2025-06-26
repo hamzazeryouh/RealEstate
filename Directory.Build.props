@@ -3,15 +3,29 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Disable Razor compilation for non-web projects -->
+    
+    <!-- Disable Razor compilation for all projects by default -->
     <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
     <GenerateRazorAssemblyInfo>false</GenerateRazorAssemblyInfo>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    
+    <!-- Disable other design-time targets that cause warnings -->
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultWebContentItems>false</EnableDefaultWebContentItems>
+    
+    <!-- Suppress specific MSBuild warnings -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB4011</MSBuildWarningsAsMessages>
   </PropertyGroup>
 
-  <!-- Override for Web projects -->
-  <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Web.'))">
+  <!-- Enable Razor only for actual Web projects -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'RealEstate.Web.Host'">
     <EnableDefaultRazorGenerateItems>true</EnableDefaultRazorGenerateItems>
     <GenerateRazorAssemblyInfo>true</GenerateRazorAssemblyInfo>
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+    <EnableDefaultPageItems>true</EnableDefaultPageItems>
+    <EnableDefaultWebContentItems>true</EnableDefaultWebContentItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +37,7 @@
     <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Update="FluentValidation" Version="11.8.1" />
@@ -30,5 +45,15 @@
     <PackageReference Update="Serilog.AspNetCore" Version="8.0.0" />
     <PackageReference Update="MailKit" Version="4.8.0" />
     <PackageReference Update="MimeKit" Version="4.8.0" />
+    
+    <!-- Test packages -->
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Update="xunit" Version="2.6.2" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Update="FluentAssertions" Version="6.12.0" />
+    <PackageReference Update="Moq" Version="4.20.69" />
+    <PackageReference Update="Testcontainers" Version="3.6.0" />
+    <PackageReference Update="Testcontainers.MsSql" Version="3.6.0" />
   </ItemGroup>
 </Project> 
