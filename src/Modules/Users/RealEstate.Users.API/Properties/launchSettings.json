@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "RealEstate.Users.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53828;http://localhost:53829"
+    }
+  }
+}
