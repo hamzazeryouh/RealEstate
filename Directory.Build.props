@@ -3,6 +3,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Disable Razor compilation for non-web projects -->
+    <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
+    <GenerateRazorAssemblyInfo>false</GenerateRazorAssemblyInfo>
+  </PropertyGroup>
+
+  <!-- Override for Web projects -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Web.'))">
+    <EnableDefaultRazorGenerateItems>true</EnableDefaultRazorGenerateItems>
+    <GenerateRazorAssemblyInfo>true</GenerateRazorAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
