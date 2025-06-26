@@ -1,0 +1,93 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+
+# Core Infrastructure
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Core", "src\RealEstate.Core\RealEstate.Core.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789012}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Infrastructure", "src\RealEstate.Infrastructure\RealEstate.Infrastructure.csproj", "{B2C3D4E5-F6G7-8901-BCDE-234567890123}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Shared", "src\RealEstate.Shared\RealEstate.Shared.csproj", "{C3D4E5F6-G7H8-9012-CDEF-345678901234}"
+EndProject
+
+# Business Modules
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Properties.Domain", "src\Modules\Properties\RealEstate.Properties.Domain\RealEstate.Properties.Domain.csproj", "{D4E5F6G7-H8I9-0123-DEFG-456789012345}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Properties.Application", "src\Modules\Properties\RealEstate.Properties.Application\RealEstate.Properties.Application.csproj", "{E5F6G7H8-I9J0-1234-EFGH-567890123456}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Properties.Infrastructure", "src\Modules\Properties\RealEstate.Properties.Infrastructure\RealEstate.Properties.Infrastructure.csproj", "{F6G7H8I9-J0K1-2345-FGHI-678901234567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Properties.API", "src\Modules\Properties\RealEstate.Properties.API\RealEstate.Properties.API.csproj", "{G7H8I9J0-K1L2-3456-GHIJ-789012345678}"
+EndProject
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Users.Domain", "src\Modules\Users\RealEstate.Users.Domain\RealEstate.Users.Domain.csproj", "{H8I9J0K1-L2M3-4567-HIJK-890123456789}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Users.Application", "src\Modules\Users\RealEstate.Users.Application\RealEstate.Users.Application.csproj", "{I9J0K1L2-M3N4-5678-IJKL-901234567890}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Users.Infrastructure", "src\Modules\Users\RealEstate.Users.Infrastructure\RealEstate.Users.Infrastructure.csproj", "{J0K1L2M3-N4O5-6789-JKLM-012345678901}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Users.API", "src\Modules\Users\RealEstate.Users.API\RealEstate.Users.API.csproj", "{K1L2M3N4-O5P6-7890-KLMN-123456789012}"
+EndProject
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Listings.Domain", "src\Modules\Listings\RealEstate.Listings.Domain\RealEstate.Listings.Domain.csproj", "{L2M3N4O5-P6Q7-8901-LMNO-234567890123}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Listings.Application", "src\Modules\Listings\RealEstate.Listings.Application\RealEstate.Listings.Application.csproj", "{M3N4O5P6-Q7R8-9012-MNOP-345678901234}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Listings.Infrastructure", "src\Modules\Listings\RealEstate.Listings.Infrastructure\RealEstate.Listings.Infrastructure.csproj", "{N4O5P6Q7-R8S9-0123-NOPQ-456789012345}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Listings.API", "src\Modules\Listings\RealEstate.Listings.API\RealEstate.Listings.API.csproj", "{O5P6Q7R8-S9T0-1234-OPQR-567890123456}"
+EndProject
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Contracts.Domain", "src\Modules\Contracts\RealEstate.Contracts.Domain\RealEstate.Contracts.Domain.csproj", "{P6Q7R8S9-T0U1-2345-PQRS-678901234567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Contracts.Application", "src\Modules\Contracts\RealEstate.Contracts.Application\RealEstate.Contracts.Application.csproj", "{Q7R8S9T0-U1V2-3456-QRST-789012345678}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Contracts.Infrastructure", "src\Modules\Contracts\RealEstate.Contracts.Infrastructure\RealEstate.Contracts.Infrastructure.csproj", "{R8S9T0U1-V2W3-4567-RSTU-890123456789}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Contracts.API", "src\Modules\Contracts\RealEstate.Contracts.API\RealEstate.Contracts.API.csproj", "{S9T0U1V2-W3X4-5678-STUV-901234567890}"
+EndProject
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Notifications.Domain", "src\Modules\Notifications\RealEstate.Notifications.Domain\RealEstate.Notifications.Domain.csproj", "{T0U1V2W3-X4Y5-6789-TUVW-012345678901}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Notifications.Application", "src\Modules\Notifications\RealEstate.Notifications.Application\RealEstate.Notifications.Application.csproj", "{U1V2W3X4-Y5Z6-7890-UVWX-123456789012}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Notifications.Infrastructure", "src\Modules\Notifications\RealEstate.Notifications.Infrastructure\RealEstate.Notifications.Infrastructure.csproj", "{V2W3X4Y5-Z6A7-8901-VWXY-234567890123}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Notifications.API", "src\Modules\Notifications\RealEstate.Notifications.API\RealEstate.Notifications.API.csproj", "{W3X4Y5Z6-A7B8-9012-WXYZ-345678901234}"
+EndProject
+
+# API Gateway & Host
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.API.Gateway", "src\RealEstate.API.Gateway\RealEstate.API.Gateway.csproj", "{X4Y5Z6A7-B8C9-0123-XYZA-456789012345}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Web.Host", "src\RealEstate.Web.Host\RealEstate.Web.Host.csproj", "{Y5Z6A7B8-C9D0-1234-YZAB-567890123456}"
+EndProject
+
+# Tests
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Properties.Tests", "tests\RealEstate.Properties.Tests\RealEstate.Properties.Tests.csproj", "{Z6A7B8C9-D0E1-2345-ZABC-678901234567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Integration.Tests", "tests\RealEstate.Integration.Tests\RealEstate.Integration.Tests.csproj", "{A7B8C9D0-E1F2-3456-ABCD-789012345678}"
+EndProject
+
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {A1B2C3D4-E5F6-7890-ABCD-123456789012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-123456789012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-123456789012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-123456789012}.Release|Any CPU.Build.0 = Release|Any CPU
+        {B2C3D4E5-F6G7-8901-BCDE-234567890123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B2C3D4E5-F6G7-8901-BCDE-234567890123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B2C3D4E5-F6G7-8901-BCDE-234567890123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B2C3D4E5-F6G7-8901-BCDE-234567890123}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+    GlobalSection(ExtensibilityGlobals) = postSolution
+        SolutionGuid = {12345678-1234-1234-1234-123456789012}
+    EndGlobalSection
+EndGlobal 

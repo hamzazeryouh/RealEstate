@@ -1,0 +1,265 @@
+version: '3.8'
+
+services:
+  # Main Application
+  realestate-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: realestate-api
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=RealEstate;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - Jwt__Issuer=RealEstateAPI
+      - Jwt__Audience=RealEstateUsers
+      - AzureStorage__ConnectionString=UseDevelopmentStorage=true
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ./uploads:/app/uploads
+    depends_on:
+      - sqlserver
+      - redis
+      - azurite
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: realestate-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: realestate-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass "YourRedisPassword"
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # Azure Storage Emulator (Azurite)
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: realestate-azurite
+    ports:
+      - "10000:10000"  # Blob service
+      - "10001:10001"  # Queue service
+      - "10002:10002"  # Table service
+    volumes:
+      - azurite-data:/data
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --location /data --debug /data/debug.log
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # Elasticsearch (Optional - for advanced search)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: realestate-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - search
+
+  # Kibana (Optional - for Elasticsearch management)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.0
+    container_name: realestate-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - search
+
+  # Message Queue (RabbitMQ - Optional)
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: realestate-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - messaging
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: realestate-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./uploads:/usr/share/nginx/html/uploads:ro
+    depends_on:
+      - realestate-api
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Database Migration Service
+  db-migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    container_name: realestate-migrator
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=RealEstate;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;
+    depends_on:
+      - sqlserver
+    networks:
+      - realestate-network
+    profiles:
+      - migration
+
+  # Monitoring - Prometheus (Optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: realestate-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Monitoring - Grafana (Optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: realestate-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Logging - Seq (Optional)
+  seq:
+    image: datalust/seq:latest
+    container_name: realestate-seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=QH+P+1ysOB7WJAnuBKAlhZhL9Nw03E/n0OFj4C5cVdqJTm3RBQZ49KqPZoWUvNKhq5K6WQQYy
+    volumes:
+      - seq-data:/data
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - logging
+
+  # Background Jobs - Hangfire Dashboard (Optional)
+  hangfire-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.hangfire
+    container_name: realestate-hangfire
+    ports:
+      - "5555:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=RealEstate;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;
+      - ConnectionStrings__Hangfire=Server=sqlserver;Database=RealEstate_Hangfire;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;
+    depends_on:
+      - sqlserver
+    networks:
+      - realestate-network
+    restart: unless-stopped
+    profiles:
+      - jobs
+
+volumes:
+  sqlserver-data:
+    driver: local
+  redis-data:
+    driver: local
+  azurite-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  seq-data:
+    driver: local
+
+networks:
+  realestate-network:
+    driver: bridge
+    name: realestate-network 
