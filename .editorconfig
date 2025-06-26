@@ -1,0 +1,43 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs,csproj,props,targets}]
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Suppress MSBuild warnings
+[*.{csproj,props,targets}]
+# Suppress Razor-related warnings
+dotnet_diagnostic.MSB4011.severity = none
+dotnet_diagnostic.MSB3026.severity = none
+dotnet_diagnostic.MSB4036.severity = none
+dotnet_diagnostic.NETSDK1137.severity = none
+
+# C# Code Style Rules
+[*.cs]
+# Organize usings
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# Language constructs
+csharp_prefer_braces = true:warning
+csharp_prefer_simple_using_statement = true:suggestion
+
+# Naming conventions
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.symbols = interface_symbols
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.style = prefix_interface_with_i
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.severity = warning
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities = *
+
+dotnet_naming_style.prefix_interface_with_i.required_prefix = I
+dotnet_naming_style.prefix_interface_with_i.capitalization = pascal_case 
