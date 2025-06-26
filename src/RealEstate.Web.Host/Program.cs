@@ -2,9 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RealEstate.Core.Tenant;
-using RealEstate.Infrastructure.MultiTenant;
-using RealEstate.Infrastructure.Persistence;
 using System.Reflection;
 using System.Text;
 
@@ -84,10 +81,6 @@ builder.Services.AddAuthorization();
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
-// Add Multi-tenancy
-builder.Services.AddScoped<ITenantProvider, TenantProvider>();
-builder.Services.AddScoped<ITenantRepository, TenantRepository>();
-
 // Add MediatR
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
@@ -102,13 +95,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-// Add Application Services
-builder.Services.AddScoped<IPropertyService, PropertyService>();
-builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-
-// Add AutoMapper
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
 // Add Logging
 builder.Services.AddLogging(logging =>
 {
@@ -117,8 +103,7 @@ builder.Services.AddLogging(logging =>
 });
 
 // Add Health Checks
-builder.Services.AddHealthChecks()
-    .AddDbContext<ApplicationDbContext>();
+builder.Services.AddHealthChecks();
 
 // Add Memory Cache
 builder.Services.AddMemoryCache();
@@ -143,12 +128,7 @@ else
 }
 
 app.UseHttpsRedirection();
-
-// Add Multi-tenant middleware
-app.UseMiddleware<TenantResolutionMiddleware>();
-
 app.UseCors("DefaultPolicy");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -159,26 +139,21 @@ app.MapHealthChecks("/health");
 // Create a simple endpoint for testing
 app.MapGet("/", () => "RealEstate API is running! Go to /swagger to see the API documentation.");
 
-// Map module endpoints
-app.MapGroup("/api/properties")
-   .WithTags("Properties")
-   .RequireAuthorization();
+// API endpoint groups for future development
+app.MapGet("/api/properties", () => "Properties API module loaded")
+   .WithTags("Properties");
 
-app.MapGroup("/api/users")
-   .WithTags("Users")
-   .RequireAuthorization();
+app.MapGet("/api/users", () => "Users API module loaded")
+   .WithTags("Users");
 
-app.MapGroup("/api/listings")
-   .WithTags("Listings")
-   .RequireAuthorization();
+app.MapGet("/api/listings", () => "Listings API module loaded")
+   .WithTags("Listings");
 
-app.MapGroup("/api/contracts")
-   .WithTags("Contracts")
-   .RequireAuthorization();
+app.MapGet("/api/contracts", () => "Contracts API module loaded")
+   .WithTags("Contracts");
 
-app.MapGroup("/api/notifications")
-   .WithTags("Notifications")
-   .RequireAuthorization();
+app.MapGet("/api/notifications", () => "Notifications API module loaded")
+   .WithTags("Notifications");
 
 // Ensure database is created in development
 if (app.Environment.IsDevelopment())
@@ -189,6 +164,8 @@ if (app.Environment.IsDevelopment())
         {
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             context.Database.EnsureCreated();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Database ensured created successfully.");
         }
         catch (Exception ex)
         {
