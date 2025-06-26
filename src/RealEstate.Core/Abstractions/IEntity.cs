@@ -2,7 +2,7 @@ namespace RealEstate.Core.Abstractions;
 
 public interface IEntity
 {
-    object[] GetKeys();
+    // Basic entity marker interface
 }
 
 public interface IEntity<TKey> : IEntity
@@ -17,16 +17,16 @@ public interface ITenantEntity
 
 public interface IAuditableEntity
 {
-    DateTime CreatedAt { get; set; }
+    DateTime CreatedDate { get; set; }
     string? CreatedBy { get; set; }
-    DateTime? UpdatedAt { get; set; }
+    DateTime? UpdatedDate { get; set; }
     string? UpdatedBy { get; set; }
 }
 
 public interface ISoftDeletableEntity
 {
     bool IsDeleted { get; set; }
-    DateTime? DeletedAt { get; set; }
+    DateTime? DeletedDate { get; set; }
     string? DeletedBy { get; set; }
 }
 

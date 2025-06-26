@@ -69,11 +69,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "default-secret-key-change-in-production")),
             ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "RealEstate.API",
             ValidateAudience = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "RealEstate.Client",
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
@@ -88,12 +88,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 
-// Add Database Context
-builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+// Add MediatR
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+});
+
+// Add Database Context with connection string fallback
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    var tenantProvider = serviceProvider.GetService<ITenantProvider>();
-    var connectionString = tenantProvider?.GetCurrentTenantAsync().Result?.ConnectionString 
-                          ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                          ?? "Server=(localdb)\\mssqllocaldb;Database=RealEstateDB;Trusted_Connection=true;MultipleActiveResultSets=true;";
     
     options.UseSqlServer(connectionString);
 });
@@ -125,7 +129,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RealEstate API V1");
+        c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
+    });
     app.UseDeveloperExceptionPage();
 }
 else
@@ -144,9 +152,12 @@ app.UseCors("DefaultPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map endpoints
+// Map controllers
 app.MapControllers();
 app.MapHealthChecks("/health");
+
+// Create a simple endpoint for testing
+app.MapGet("/", () => "RealEstate API is running! Go to /swagger to see the API documentation.");
 
 // Map module endpoints
 app.MapGroup("/api/properties")
@@ -169,18 +180,39 @@ app.MapGroup("/api/notifications")
    .WithTags("Notifications")
    .RequireAuthorization();
 
-// Seed database if needed
-using (var scope = app.Services.CreateScope())
+// Ensure database is created in development
+if (app.Environment.IsDevelopment())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    if (app.Environment.IsDevelopment())
+    using (var scope = app.Services.CreateScope())
     {
-        context.Database.EnsureCreated();
-        // Seed development data here
+        try
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.EnsureCreated();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while creating the database.");
+        }
     }
 }
 
 app.Run();
 
 // Make the implicit Program class public so test projects can access it
-public partial class Program { } 
+public partial class Program { }
+
+// Placeholder DbContext since we don't have the actual implementation yet
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        // Entity configurations will be added here
+    }
+} 

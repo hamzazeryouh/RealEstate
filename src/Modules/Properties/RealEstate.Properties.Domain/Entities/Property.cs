@@ -2,11 +2,9 @@ using RealEstate.Core.Abstractions;
 
 namespace RealEstate.Properties.Domain.Entities;
 
-public class Property : IAggregateRoot, IEntity<Guid>, ITenantEntity, IAuditableEntity, ISoftDeletableEntity
+public class Property : IEntity, ITenantEntity, IAuditableEntity
 {
-    private readonly List<IDomainEvent> _domainEvents = new();
-
-    public Guid Id { get; set; }
+    public Guid PropertyId { get; set; } = Guid.NewGuid();
     public string TenantId { get; set; } = string.Empty;
     
     // Basic Information
@@ -49,15 +47,15 @@ public class Property : IAggregateRoot, IEntity<Guid>, ITenantEntity, IAuditable
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     
-    // Media and Documents
-    public List<PropertyImage> Images { get; set; } = new();
-    public List<PropertyDocument> Documents { get; set; } = new();
+    // Media and Documents (simplified as JSON strings)
+    public string? ImageUrls { get; set; } // JSON array of image URLs
+    public string? DocumentUrls { get; set; } // JSON array of document URLs
     public string? VirtualTourUrl { get; set; }
     public string? VideoUrl { get; set; }
     
-    // Features and Amenities
-    public List<PropertyFeature> Features { get; set; } = new();
-    public List<PropertyAmenity> Amenities { get; set; } = new();
+    // Features and Amenities (simplified as JSON strings)
+    public string? Features { get; set; } // JSON array of features
+    public string? Amenities { get; set; } // JSON array of amenities
     
     // Owner Information
     public Guid OwnerId { get; set; }
@@ -79,30 +77,15 @@ public class Property : IAggregateRoot, IEntity<Guid>, ITenantEntity, IAuditable
     public string? Slug { get; set; }
     
     // Audit Information
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? UpdatedDate { get; set; }
     public string? UpdatedBy { get; set; }
     
     // Soft Delete
     public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
+    public DateTime? DeletedDate { get; set; }
     public string? DeletedBy { get; set; }
-    
-    // Domain Events
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-    
-    public object[] GetKeys() => new object[] { Id };
-    
-    public void AddDomainEvent(IDomainEvent domainEvent)
-    {
-        _domainEvents.Add(domainEvent);
-    }
-    
-    public void ClearDomainEvents()
-    {
-        _domainEvents.Clear();
-    }
     
     // Business Methods
     public void Publish()
@@ -111,7 +94,6 @@ public class Property : IAggregateRoot, IEntity<Guid>, ITenantEntity, IAuditable
         {
             IsPublished = true;
             PublishedAt = DateTime.UtcNow;
-            AddDomainEvent(new PropertyPublishedEvent(Id, TenantId));
         }
     }
     
@@ -121,20 +103,35 @@ public class Property : IAggregateRoot, IEntity<Guid>, ITenantEntity, IAuditable
         {
             IsPublished = false;
             PublishedAt = null;
-            AddDomainEvent(new PropertyUnpublishedEvent(Id, TenantId));
         }
     }
     
     public void IncrementViewCount()
     {
         ViewCount++;
-        AddDomainEvent(new PropertyViewedEvent(Id, TenantId, ViewCount));
     }
     
     public void IncrementInquiryCount()
     {
         InquiryCount++;
-        AddDomainEvent(new PropertyInquiryReceivedEvent(Id, TenantId, InquiryCount));
+    }
+    
+    // Static factory method
+    public static Property Create(string title, string description, decimal price, PropertyType type, Address address)
+    {
+        var property = new Property
+        {
+            PropertyId = Guid.NewGuid(),
+            Title = title,
+            Description = description,
+            Price = price,
+            Type = type,
+            Address = address,
+            Status = PropertyStatus.Available,
+            CreatedDate = DateTime.UtcNow
+        };
+        
+        return property;
     }
 }
 
